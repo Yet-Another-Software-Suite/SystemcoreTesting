@@ -44,6 +44,7 @@ Systemcore units originally shipped to teams during the initial FRC Alpha test a
 * [AdvantageKit](AdvantageKit.md)
 * [ChoreoLib](ChoreoLib.md)
 * [PathPlannerLib](PathPlannerLib.md)
+* [PhotonLib](PhotonVision.md)
 * [ThriftyLib](ThriftyLib.md)
 * [LimelightLib2](LimelightVision.md)
 
