@@ -167,14 +167,16 @@ Every device in the configuration (each module's `drive` and `angle` motors and 
 - **`type`**: for motors, the motor controller then the motor, such as `talonfx_krakenx60`, `sparkmax_neo` or `nova_neo`. For absolute encoders and gyros, the device then how it is connected: `can`, `attached` (wired to the angle motor controller), `dio` or `analog` (a Systemcore SmartIO port), or `internal`. For example `cancoder_can`, `revthroughbore_attached`, `revthroughbore_dio` or `pigeon2_can`.
 - **`id`**: the CAN ID of a CAN device.
 - **`channel`**: the SmartIO port of a `dio` or `analog` encoder.
-- **`canbus`**: the CAN bus the device is on. Leave it empty (`""`) for the default bus. What else it accepts depends on the vendor:
+- **`canbus`**: the CAN bus the device is on. What it accepts, and which bus an empty `canbus` means, depends on the vendor:
 
-| Vendor | Devices | `canbus` |
-| --- | --- | --- |
-| CTRE (Phoenix6) | `talonfx`, `talonfxs`, `cancoder`, `pigeon2` | A Phoenix 6 CAN bus name, such as a CANivore's name |
-| REV (REVLib) | `sparkmax`, `sparkflex`, `splineencoder` | A bus number (`"1"`, `"2"`, ...) or a WPILib CAN port name such as `"CAN_S1"` |
-| The Thrifty Bot (ThriftyLib) | `nova` | A bus number only (`"1"`, `"2"`, `"3"`, ...); names are not accepted |
-| Redux (ReduxLib) | `canandgyro`, `canandmag` | A ReduxLib CAN bus name |
+| Vendor | Devices | Empty `canbus` | To use a Systemcore CAN bus (`can_s0` to `can_s4`) |
+| --- | --- | --- | --- |
+| CTRE (Phoenix6) | `talonfx`, `talonfxs`, `cancoder`, `pigeon2` | `can_s2` | Its name in lowercase: `"can_s0"` to `"can_s4"`. A CANivore's name or serial number also works. |
+| REV (REVLib) | `sparkmax`, `sparkflex`, `splineencoder` | `can_s0` | Its number, `"0"` to `"4"` (`"1"` is `can_s1`), or its port name, such as `"CAN_S1"` |
+| The Thrifty Bot (ThriftyLib) | `nova` | bus 0 | Its number only: `"1"`, `"2"`, `"3"`, ...; names are not accepted |
+| Redux (ReduxLib) | `canandgyro`, `canandmag` | `can_s0` | A ReduxLib bus string: `"socketcan:can_s0"` to `"socketcan:can_s4"` |
+
+Leaving `canbus` empty does not put every device on the same bus: CTRE's Phoenix 6 defaults to `can_s2` on the Systemcore, while REV and Redux default to `can_s0`. When CTRE devices share a bus with other vendors' devices, set `canbus` on each device, for example `"can_s0"` on the CTRE devices.
 
 **Thrifty Nova:** supported again through the YAMS `NovaWrapper`; install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) to use it. A Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
 
