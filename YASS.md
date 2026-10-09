@@ -2,6 +2,8 @@
 
 Vendor libraries from the Yet Another Software Suite for 2027 WPILib and Systemcore.
 
+The vendordeps and libraries are downloaded from `cdn.yassrobotics.com`, including when you build, so YAMS and YAGSL also work on school networks that block `github.io`. Vendordeps installed from the old `yet-another-software-suite.github.io` URLs keep working, but reinstalling from the URLs below switches them over.
+
 - [YAMS (Yet Another Mechanism System)](#yams-yet-another-mechanism-system)
 - [YAGSL (Yet Another Generic Swerve Library)](#yagsl-yet-another-generic-swerve-library)
 
@@ -18,16 +20,43 @@ YAMS ships one vendordep per command framework. Install the one that matches you
 Commands v2 (`org.wpilib.command2`, Java and C++):
 
 ```
-https://yet-another-software-suite.github.io/YAMS/yams_commands2.json
+https://cdn.yassrobotics.com/yams_commands2.json
 ```
 
 Commands v3 (`org.wpilib.command3`, Java only):
 
 ```
-https://yet-another-software-suite.github.io/YAMS/yams_commands3.json
+https://cdn.yassrobotics.com/yams_commands3.json
 ```
 
+These always point at the latest release. To pin a release, use its vendordep instead:
+
+| 2027 release | Commands v2 | Commands v3 |
+| --- | --- | --- |
+| [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.09) (latest) | [yams_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.09.json) | [yams_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.09.json) |
+| [v2026.10.08](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.08) | [yams_commands2-2026.10.08.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.08.json) | [yams_commands3-2026.10.08.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.08.json) |
+| [v2026.10.05](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.05) | [yams_commands2-2026.10.05.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.05.json) | [yams_commands3-2026.10.05.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.05.json) |
+| [v2026.10.03](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.03) | [yams_commands2-2026.10.03.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.03.json) | [yams_commands3-2026.10.03.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.03.json) |
+
 v2026.10.03 is the first release built for WPILib v2027.0.0-alpha-7. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands3).
+
+### Thrifty Nova
+
+YAMS v2026.10.09 supports The Thrifty Bot's Thrifty Nova motor controller through `NovaWrapper` (`yams.core.motorcontrollers.local.NovaWrapper` in Java, `yams::motorcontrollers::local::NovaWrapper` in C++), built on ThriftyLib 2027.0.0-alpha-5. To use Novas, also install the ThriftyLib vendordep:
+
+```
+https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json
+```
+
+```java
+SmartMotorControllerConfig config = new SmartMotorControllerConfig(this)
+    .withClosedLoopController(0.2, 0, 0)
+    .withStatorCurrentLimit(Amps.of(40));
+// A Nova driving a NEO on CAN bus 0, CAN ID 3
+SmartMotorController motor = new NovaWrapper(new Nova(0, 3, MotorType.NEO), DCMotor.getNEO(1), config);
+```
+
+The closed loop controller runs on the Systemcore, so the Nova behaves the same in simulation and on the robot. For an external encoder, pass `withExternalEncoder(...)` an absolute (`FeedbackSensorType.ABS`) or quadrature (`FeedbackSensorType.QUAD`) encoder wired to the Nova's data port, or a Thrifty CAN Encoder (`CanEncoder`).
 
 ### Migrating from 2026 YAMS
 
@@ -119,16 +148,29 @@ Like YAMS, YAGSL ships one vendordep per command framework. Install the one that
 Commands v2 (`org.wpilib.command2`, Java only):
 
 ```
-https://yet-another-software-suite.github.io/YAGSL/yagsl_commands2.json
+https://cdn.yassrobotics.com/yagsl_commands2.json
 ```
 
 Commands v3 (`org.wpilib.command3`, Java only):
 
 ```
-https://yet-another-software-suite.github.io/YAGSL/yagsl_commands3.json
+https://cdn.yassrobotics.com/yagsl_commands3.json
 ```
 
-Each YAGSL vendordep requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`) plus REVLib, Phoenix6 and ReduxLib. StudicaLib, ThriftyLib and AmLib devices are not supported yet in the 2027 alpha, since those vendors have not published 2027_alpha7 vendordeps. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands3).
+These always point at the latest release. To pin a release, use its vendordep instead:
+
+| 2027 release | Commands v2 | Commands v3 |
+| --- | --- | --- |
+| [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.09) (latest) | [yagsl_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.09.json) | [yagsl_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.09.json) |
+| [v2026.10.08](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.08) | [yagsl_commands2-2026.10.08.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.08.json) | [yagsl_commands3-2026.10.08.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.08.json) |
+
+Each YAGSL vendordep requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`) plus REVLib, Phoenix6 and ReduxLib. YAGSL v2026.10.09 uses YAMS v2026.10.09.
+
+Thrifty Novas are supported again, through the YAMS `NovaWrapper`. ThriftyLib is optional: install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) only if your configuration uses Novas. In the JSON configuration a Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
+
+The Systemcore's built in IMU can be used as the gyro with the type `systemcore_internal`. It is part of WPILib, so it needs no vendordep.
+
+StudicaLib and AmLib devices are not supported yet in the 2027 alpha, since those vendors have not published 2027_alpha7 vendordeps. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands3).
 
 ### Migrating from 2026 YAGSL
 
