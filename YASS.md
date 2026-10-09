@@ -3,6 +3,7 @@
 Vendor libraries from the Yet Another Software Suite for 2027 WPILib and Systemcore.
 
 - [YAMS (Yet Another Mechanism System)](#yams-yet-another-mechanism-system)
+- [YAGSL (Yet Another Generic Swerve Library)](#yagsl-yet-another-generic-swerve-library)
 
 ## YAMS (Yet Another Mechanism System)
 
@@ -98,3 +99,128 @@ SmartMotorControllerConfig motorConfig = new SmartMotorControllerConfig(this)
     .withTelemetry("ArmMotor", TelemetryVerbosity.HIGH);
 motorConfig.setupLiveTuning();
 ```
+
+## YAGSL (Yet Another Generic Swerve Library)
+
+Plug-and-play swerve drive library. YAGSL reads your swerve JSON configuration files and builds a YAMS `SwerveDrive` with the motors, encoders and gyro already configured.
+
+Website: https://docs.yagsl.com/
+
+### Configuration generator
+
+Use **[config.yagsl.com](http://config.yagsl.com)** to generate your swerve JSON configuration files. Fill in your gyro, motors, absolute encoders, gear ratios and module locations, then download the ZIP and unzip it into `src/main/deploy` so the files end up in `src/main/deploy/swerve/base`. The site also has a **Quick Start guide** that walks you through setting up a new project with YAGSL.
+
+The old configuration generator for 2026 YAGSL is still available at **[config.yagsl.com/old](http://config.yagsl.com/old/)**. It produces the 2026 JSON format, which 2027 YAGSL cannot read, so only use it for 2026 projects.
+
+### Vendordep URL
+
+Like YAMS, YAGSL ships one vendordep per command framework. Install the one that matches your robot code, not both. The 2026 `yagsl.json` vendordep is replaced by these two.
+
+Commands v2 (`org.wpilib.command2`, Java only):
+
+```
+https://yet-another-software-suite.github.io/YAGSL/yagsl_commands2.json
+```
+
+Commands v3 (`org.wpilib.command3`, Java only):
+
+```
+https://yet-another-software-suite.github.io/YAGSL/yagsl_commands3.json
+```
+
+Each YAGSL vendordep requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`) plus REVLib, Phoenix6 and ReduxLib. StudicaLib, ThriftyLib and AmLib devices are not supported yet in the 2027 alpha, since those vendors have not published 2027_alpha7 vendordeps. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands3).
+
+### Migrating from 2026 YAGSL
+
+These notes compare against YAGSL 2026.4.1.
+
+#### YAGSL is now built on YAMS
+
+2026 YAGSL had its own `SwerveDrive`, `SwerveInputStream`, `SwerveController`, `SwerveMath`, `SwerveDriveTest` and telemetry classes. In 2027, YAGSL only parses your JSON configuration files and builds a YAMS `SwerveDrive`. Driving, odometry, input streams, controllers and telemetry all come from YAMS, so the old `swervelib.*` drive classes are gone.
+
+The Java API is split into packages the same way YAMS is:
+
+- **`swervelib.core`**: the JSON parser, JSON models and telemetry. It does not depend on any command framework.
+- **`swervelib.commands2`**: the `SwerveParser` that robot code should use with Commands v2. It returns a `yams.commands2.swerve.SwerveDrive`.
+- **`swervelib.commands3`**: the `SwerveParser` for Commands v3. It returns a `yams.commands3.swerve.SwerveDrive`.
+
+#### New imports
+
+```java
+// Before (2026.4.1)
+import swervelib.SwerveDrive;
+import swervelib.SwerveInputStream;
+import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+
+// After (Commands v2; use swervelib.commands3 and yams.commands3 for Commands v3)
+import swervelib.commands2.SwerveParser;
+import yams.commands2.config.SwerveDriveConfig;
+import yams.commands2.swerve.SwerveDrive;
+import yams.commands2.swerve.SwerveInputStream;
+import yams.core.telemetry.SwerveDriveTelemetryConfig;
+import yams.core.telemetry.enums.TelemetryVerbosity;
+```
+
+| 2026.4.1 | 2027 |
+| --- | --- |
+| `swervelib.parser.SwerveParser` | `swervelib.commands2.SwerveParser` / `swervelib.commands3.SwerveParser` |
+| `swervelib.SwerveDrive` | `yams.commands2.swerve.SwerveDrive` / `yams.commands3.swerve.SwerveDrive` |
+| `swervelib.SwerveInputStream` | `yams.commands2.swerve.SwerveInputStream` / `yams.commands3.swerve.SwerveInputStream` |
+| `swervelib.parser.SwerveDriveConfiguration`, `SwerveControllerConfiguration` | `yams.commands2.config.SwerveDriveConfig` / `yams.commands3.config.SwerveDriveConfig` |
+| `swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity` | `yams.core.telemetry.enums.TelemetryVerbosity` |
+| `swervelib.telemetry.SwerveDriveTelemetry` | `yams.core.telemetry.SwerveDriveTelemetryConfig`, passed to `SwerveDriveConfig.withTelemetry(...)` |
+| `swervelib.SwerveModule` | `yams.core.mechanisms.swerve.SwerveModule` |
+| `swervelib.parser.*` JSON models | `swervelib.core.parser.*` |
+
+#### Creating the `SwerveDrive`
+
+`SwerveParser` is no longer constructed per directory. Call the static `parse(...)` once, then build the drive from a YAMS `SwerveDriveConfig`. Settings that used to be constructor arguments or calls on the drive (starting pose, telemetry, heading controller) now go on the config.
+
+```java
+// Before (2026.4.1)
+SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve"))
+    .createSwerveDrive(Constants.MAX_SPEED, startingPose);
+
+// After
+var cfg = new SwerveDriveConfig()
+    .withStartingPose(new Pose2d(3, 3, Rotation2d.ZERO))
+    .withSubsystem(this)
+    .withTranslationController(new PIDController(4, 0, 0))
+    .withRotationController(new PIDController(3, 0, 0))
+    .withTelemetry("swerve", new SwerveDriveTelemetryConfig(TelemetryVerbosity.HIGH));
+
+SwerveParser.parse(new File(Filesystem.getDeployDirectory(), "swerve/base"));
+SwerveDrive drive = SwerveParser.createSwerveDrive(cfg);
+```
+
+To also get the raw vendor devices (motor controllers, encoders, gyro), use `SwerveParser.createSwerveDriveDevices(cfg)`, which returns a `SwerveDriveDevices<SwerveDrive>` (`swervelib.core.parser.SwerveParser.SwerveDriveDevices`).
+
+#### `SwerveInputStream` uses `with...` methods
+
+The input stream now comes from YAMS and its options are all `with...` methods:
+
+```java
+// Before (2026.4.1)
+SwerveInputStream stream = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX())
+    .withControllerRotationAxis(driverXbox::getRightX)
+    .deadband(0.05)
+    .scaleTranslation(0.8)
+    .allianceRelativeControl(true);
+drivebase.setDefaultCommand(drivebase.driveFieldOriented(stream));
+
+// After
+SwerveInputStream stream = SwerveInputStream.of(drive, () -> -driverXbox.getLeftY(), () -> -driverXbox.getLeftX(), () -> -driverXbox.getRightX())
+    .withDeadband(0.05)
+    .withScaleTranslation(0.8)
+    .withAllianceRelativeControl();
+swerve.setDefaultCommand(swerve.run(() -> drive.setFieldRelativeChassisSpeeds(stream.get())));
+```
+
+`headingWhile(...)` is now `withHeadingControl(...)`, and `robotRelative(true)` is now `withRobotRelative()`.
+
+#### Regenerate your JSON configuration
+
+The JSON format changed (for example `imu` is now `gyro`, `encoder` is now `absoluteEncoder`, motor types name the motor like `talonfx_krakenx60`, and `controllerproperties.json` is no longer used). Rebuild your configuration with [config.yagsl.com](http://config.yagsl.com) rather than editing the 2026 files by hand. If you need to look at or edit your 2026 configuration, use the old generator at [config.yagsl.com/old](http://config.yagsl.com/old/).
