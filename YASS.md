@@ -178,6 +178,8 @@ Every device in the configuration (each module's `drive` and `angle` motors and 
 
 Leaving `canbus` empty does not put every device on the same bus: CTRE's Phoenix 6 defaults to `can_s2` on the Systemcore, while REV and Redux default to `can_s0`. When CTRE devices share a bus with other vendors' devices, set `canbus` on each device, for example `"can_s0"` on the CTRE devices.
 
+A later YAGSL update will unify this, so every vendor accepts the same `canbus` values and uses the same default bus.
+
 **Thrifty Nova:** supported again through the YAMS `NovaWrapper`; install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) to use it. A Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
 
 **Systemcore IMU:** the Systemcore's built in IMU can be the gyro, with the type `systemcore_internal`. It is part of WPILib, so it needs no vendordep and no `id` or `canbus`.
