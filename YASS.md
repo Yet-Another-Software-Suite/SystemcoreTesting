@@ -29,16 +29,9 @@ Commands v3 (`org.wpilib.command3`, Java only):
 https://cdn.yassrobotics.com/yams_commands3.json
 ```
 
-These always point at the latest release. To pin a release, use its vendordep instead:
+These always point at the latest release. The latest release for WPILib v2027.0.0-alpha-7 is [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.09); to pin it, use [yams_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.09.json) or [yams_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.09.json).
 
-| 2027 release | Commands v2 | Commands v3 |
-| --- | --- | --- |
-| [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.09) (latest) | [yams_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.09.json) | [yams_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.09.json) |
-| [v2026.10.08](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.08) | [yams_commands2-2026.10.08.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.08.json) | [yams_commands3-2026.10.08.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.08.json) |
-| [v2026.10.05](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.05) | [yams_commands2-2026.10.05.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.05.json) | [yams_commands3-2026.10.05.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.05.json) |
-| [v2026.10.03](https://github.com/Yet-Another-Software-Suite/YAMS/releases/tag/v2026.10.03) | [yams_commands2-2026.10.03.json](https://cdn.yassrobotics.com/yams_commands2-2026.10.03.json) | [yams_commands3-2026.10.03.json](https://cdn.yassrobotics.com/yams_commands3-2026.10.03.json) |
-
-v2026.10.03 is the first release built for WPILib v2027.0.0-alpha-7. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands3).
+Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAMS/tree/master/examples/commands3).
 
 ### Thrifty Nova
 
@@ -157,12 +150,7 @@ Commands v3 (`org.wpilib.command3`, Java only):
 https://cdn.yassrobotics.com/yagsl_commands3.json
 ```
 
-These always point at the latest release. To pin a release, use its vendordep instead:
-
-| 2027 release | Commands v2 | Commands v3 |
-| --- | --- | --- |
-| [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.09) (latest) | [yagsl_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.09.json) | [yagsl_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.09.json) |
-| [v2026.10.08](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.08) | [yagsl_commands2-2026.10.08.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.08.json) | [yagsl_commands3-2026.10.08.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.08.json) |
+These always point at the latest release. The latest release for WPILib v2027.0.0-alpha-7 is [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.09); to pin it, use [yagsl_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.09.json) or [yagsl_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.09.json).
 
 Each YAGSL vendordep requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`) plus REVLib, Phoenix6 and ReduxLib. YAGSL v2026.10.09 uses YAMS v2026.10.09.
 
