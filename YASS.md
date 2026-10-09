@@ -154,11 +154,31 @@ These always point at the latest release. The latest release for WPILib v2027.0.
 
 Each YAGSL vendordep only requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`). Every other vendor library is optional: install REVLib, Phoenix6, ReduxLib or ThriftyLib only if your configuration uses that vendor's devices. YAGSL loads a vendor's devices only when your JSON configuration asks for them. YAGSL v2026.10.09 uses YAMS v2026.10.09, and its vendordeps still list REVLib, Phoenix6 and ReduxLib as required; the next release drops them.
 
-Thrifty Novas are supported again, through the YAMS `NovaWrapper`. Install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) if your configuration uses Novas. In the JSON configuration a Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
-
-The Systemcore's built in IMU can be used as the gyro with the type `systemcore_internal`. It is part of WPILib, so it needs no vendordep.
-
 StudicaLib and AmLib devices are not supported yet in the 2027 alpha, since those vendors have not published 2027_alpha7 vendordeps. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands3).
+
+### Devices in the JSON configuration
+
+Every device in the configuration (each module's `drive` and `angle` motors and `absoluteEncoder`, and the `gyro`) uses the same fields:
+
+```json
+{ "type": "nova_neo", "id": 3, "canbus": "1" }
+```
+
+- **`type`**: for motors, the motor controller then the motor, such as `talonfx_krakenx60`, `sparkmax_neo` or `nova_neo`. For absolute encoders and gyros, the device then how it is connected: `can`, `attached` (wired to the angle motor controller), `dio` or `analog` (a Systemcore SmartIO port), or `internal`. For example `cancoder_can`, `revthroughbore_attached`, `revthroughbore_dio` or `pigeon2_can`.
+- **`id`**: the CAN ID of a CAN device.
+- **`channel`**: the SmartIO port of a `dio` or `analog` encoder.
+- **`canbus`**: the CAN bus the device is on. Leave it empty (`""`) for the default bus. What else it accepts depends on the vendor:
+
+| Vendor | Devices | `canbus` |
+| --- | --- | --- |
+| CTRE (Phoenix6) | `talonfx`, `talonfxs`, `cancoder`, `pigeon2` | A Phoenix 6 CAN bus name, such as a CANivore's name |
+| REV (REVLib) | `sparkmax`, `sparkflex`, `splineencoder` | A bus number (`"1"`, `"2"`, ...) or a WPILib CAN port name such as `"CAN_S1"` |
+| The Thrifty Bot (ThriftyLib) | `nova` | A bus number only (`"1"`, `"2"`, `"3"`, ...); names are not accepted |
+| Redux (ReduxLib) | `canandgyro`, `canandmag` | A ReduxLib CAN bus name |
+
+**Thrifty Nova:** supported again through the YAMS `NovaWrapper`; install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) to use it. A Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
+
+**Systemcore IMU:** the Systemcore's built in IMU can be the gyro, with the type `systemcore_internal`. It is part of WPILib, so it needs no vendordep and no `id` or `canbus`.
 
 ### Migrating from 2026 YAGSL
 
