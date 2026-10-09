@@ -152,9 +152,9 @@ https://cdn.yassrobotics.com/yagsl_commands3.json
 
 These always point at the latest release. The latest release for WPILib v2027.0.0-alpha-7 is [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.09); to pin it, use [yagsl_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.09.json) or [yagsl_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.09.json).
 
-Each YAGSL vendordep requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`) plus REVLib, Phoenix6 and ReduxLib. YAGSL v2026.10.09 uses YAMS v2026.10.09.
+Each YAGSL vendordep only requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`). Every other vendor library is optional: install REVLib, Phoenix6, ReduxLib or ThriftyLib only if your configuration uses that vendor's devices. YAGSL loads a vendor's devices only when your JSON configuration asks for them. YAGSL v2026.10.09 uses YAMS v2026.10.09, and its vendordeps still list REVLib, Phoenix6 and ReduxLib as required; the next release drops them.
 
-Thrifty Novas are supported again, through the YAMS `NovaWrapper`. ThriftyLib is optional: install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) only if your configuration uses Novas. In the JSON configuration a Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
+Thrifty Novas are supported again, through the YAMS `NovaWrapper`. Install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) if your configuration uses Novas. In the JSON configuration a Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
 
 The Systemcore's built in IMU can be used as the gyro with the type `systemcore_internal`. It is part of WPILib, so it needs no vendordep.
 
