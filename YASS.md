@@ -152,7 +152,7 @@ https://cdn.yassrobotics.com/yagsl_commands3.json
 
 These always point at the latest release. The latest release for WPILib v2027.0.0-alpha-7 is [v2026.10.09](https://github.com/Yet-Another-Software-Suite/YAGSL/releases/tag/v2026.10.09); to pin it, use [yagsl_commands2-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands2-2026.10.09.json) or [yagsl_commands3-2026.10.09.json](https://cdn.yassrobotics.com/yagsl_commands3-2026.10.09.json).
 
-Each YAGSL vendordep only requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`). Every other vendor library is optional: install REVLib, Phoenix6, ReduxLib or ThriftyLib only if your configuration uses that vendor's devices. YAGSL loads a vendor's devices only when your JSON configuration asks for them. YAGSL v2026.10.09 uses YAMS v2026.10.09, and its vendordeps still list REVLib, Phoenix6 and ReduxLib as required; the next release drops them.
+Each YAGSL vendordep only requires the matching YAMS vendordep (`yams_commands2.json` or `yams_commands3.json`). Every other vendor library is optional: install REVLib, Phoenix6, ReduxLib or ThriftyLib only if your configuration uses that vendor's devices. YAGSL loads a vendor's devices only when your JSON configuration asks for them. YAGSL v2026.10.09 uses YAMS v2026.10.09.
 
 StudicaLib and AmLib devices are not supported yet in the 2027 alpha, since those vendors have not published 2027_alpha7 vendordeps. Example robot projects for both frameworks are in [examples/commands2](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands2) and [examples/commands3](https://github.com/Yet-Another-Software-Suite/YAGSL/tree/main/examples/commands3).
 
@@ -167,18 +167,16 @@ Every device in the configuration (each module's `drive` and `angle` motors and 
 - **`type`**: for motors, the motor controller then the motor, such as `talonfx_krakenx60`, `sparkmax_neo` or `nova_neo`. For absolute encoders and gyros, the device then how it is connected: `can`, `attached` (wired to the angle motor controller), `dio` or `analog` (a Systemcore SmartIO port), or `internal`. For example `cancoder_can`, `revthroughbore_attached`, `revthroughbore_dio` or `pigeon2_can`.
 - **`id`**: the CAN ID of a CAN device.
 - **`channel`**: the SmartIO port of a `dio` or `analog` encoder.
-- **`canbus`**: the CAN bus the device is on. What it accepts, and which bus an empty `canbus` means, depends on the vendor:
+- **`canbus`**: the Systemcore CAN bus the device is on, the same way for every vendor:
 
-| Vendor | Devices | Empty `canbus` | To use a Systemcore CAN bus (`can_s0` to `can_s4`) |
-| --- | --- | --- | --- |
-| CTRE (Phoenix6) | `talonfx`, `talonfxs`, `cancoder`, `pigeon2` | `can_s2` | Its name in lowercase: `"can_s0"` to `"can_s4"`. A CANivore's name or serial number also works. |
-| REV (REVLib) | `sparkmax`, `sparkflex`, `splineencoder` | `can_s0` | Its number, `"0"` to `"4"` (`"1"` is `can_s1`), or its port name, such as `"CAN_S1"` |
-| The Thrifty Bot (ThriftyLib) | `nova` | bus 0 | Its number only: `"1"`, `"2"`, `"3"`, ...; names are not accepted |
-| Redux (ReduxLib) | `canandgyro`, `canandmag` | `can_s0` | A ReduxLib bus string: `"socketcan:can_s0"` to `"socketcan:can_s4"` |
+| `canbus` | CAN bus |
+| --- | --- |
+| `""` (empty) | `can_s0` |
+| `"1"`, `"2"`, `"3"`, `"4"` | `can_s1`, `can_s2`, `can_s3`, `can_s4` |
 
-Leaving `canbus` empty does not put every device on the same bus: CTRE's Phoenix 6 defaults to `can_s2` on the Systemcore, while REV and Redux default to `can_s0`. When CTRE devices share a bus with other vendors' devices, set `canbus` on each device, for example `"can_s0"` on the CTRE devices.
+CTRE devices (`talonfx`, `talonfxs`, `cancoder`, `pigeon2`) can also be on a CANivore: set `canbus` to the CANivore's name. Every other vendor only takes a bus number, and [config.yagsl.com](http://config.yagsl.com) flags anything else.
 
-A later YAGSL update will unify this, so every vendor accepts the same `canbus` values and uses the same default bus.
+CTRE devices with an empty `canbus` are on `can_s0` like every other vendor, even though Phoenix 6 on its own defaults to `can_s2`. If a configuration names a Systemcore CAN bus, such as `"can_s1"` or `"socketcan:can_s1"`, change it to the bus number, `"1"`.
 
 **Thrifty Nova:** supported again through the YAMS `NovaWrapper`; install the [ThriftyLib vendordep](https://software.thethriftybot.com/frcvendor/ThriftyLib-2027.json) to use it. A Nova is `nova_` followed by its motor: `nova_neo`, `nova_neo2`, `nova_neo550`, `nova_vortex`, `nova_minion` or `nova_pulsar`. An absolute encoder attached to the Nova's data port (for example `revthroughbore_attached`) is used as the module's external feedback encoder, and attached analog encoders work too.
 
